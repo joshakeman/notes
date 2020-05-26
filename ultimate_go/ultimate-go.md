@@ -385,14 +385,29 @@ Arrays are not the most important data structures in Go, the slice is.
 
 Technically a slice is a vector. 
 
-The OS measures memory at a granularity called a page... can be 4k, 8k, 16k... 
+The OS manages memory at a granularity called a page... can be 4k, 8k, 16k... 
+
+The TLB is a special cache the operating system manages ... creates a cache of virtual addresses to physical memory locations... the OS abstracts the real address to allow for quick lookups via these virtual addresses
+
+If you get TLB cache misses, the hardware has to go ask the OS where the thingy is, and the OS has to traverse its paging table, and if you have a VM like a cloud environment they have page systems too... a TLB miss can be really, really deadly
 
 Performance is not about how fast you can cycle the clock, it's how efficienctly we can move data into memory (cache) so you can access it quickly
 
+*The pre-fetchers are everything and we must be mechanically sympathetic with them ... pre-fetchers love arrays*
+
+I don't care what your algorithm is, an array will beat it 
+
+Actually a slice is the most important data structure in Go, because they represent arrays under teh hood... technically slices are *vectors*
+
+Stack overflow link about what a vector is in C++ : https://stackoverflow.com/questions/508374/what-are-vectors-and-how-are-they-used-in-programming
+
+If you use the slice for the majority of your data handling needs, you are inherently being mechanically sympathetic. Maps too build data underneath with contiguous memory... this creates perdictable memory access patterns which aids performance
 
 ## Arrays Part 2 -- Semantics
 
 ## Slices (Part 1)
+
+A string is a two word data structure
 
 Use a slice of values over a slice of pointers when reasonable
 
@@ -405,6 +420,39 @@ Go has built-in types, user-defined types, and reference types (slice, maps, fun
 A reference type set to its zero value is nil
 
 We will use make when we already know ahead of time how much memory to allocate toward its backing data structure (an array)
+
+With value semantics, every piece of code is operating on its own copy of the data
+
+WIth pointer semeantics, the data is shared, which brings efficiencies, but mutation must be dealt with because it can create side effects throughout the application
+
+So, are you doing the same thing with these two loops?
+
+```go
+for i, v := range friends {
+    friends[1] = "Jack"
+    
+    if i == 1 {
+            fmt.Println(v)
+        }
+}
+// Here we're passing a copy of the value of friend to Print, meaning we have a new string value which points to the underlying array which may hold, say, the letters for "Apple"
+```
+
+AND
+
+```go
+for i := range friends {
+    friends[1] = "Jack"
+
+    if i == 1 {
+        fmt.Println(fruits[1])
+    }
+}
+```
+
+No, though both examples seem to be accessing fruits from our array, the first is accessing the VALUE of the frien d string, whereas the second is accessing the actual string data via a pointer. The second is the pointer semantic form, the first is the value semantic
+
+Understand, value semantics mean we're operating on our own copy of the data.
 
 A slice is a three-word architecture... a pointer, the length of the underlying array, and the capacity of the underlying array... if only length is set on the make call then capacity will match length
 
