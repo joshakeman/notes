@@ -466,13 +466,15 @@ Slices are 24-byte values (8 for pointer, 8 for length, 8 for capacity)
 
 One problem with slices is the pointer... it could lead to side effects as we mutate data
 
+**We do not want to be mixing value and pointer semantics**
+
 ## 3.3--Slices Part 2 (append slices)
 
 There's two things we do often with slices... we append to them, and we take slices of them
 
 'var' is an indicator that we're using a zero value
 
-A zero value slice is three bytes looking like this...
+A zero value slice is three bytes (words) looking like this...
 
 | nil |
 ______
@@ -506,11 +508,14 @@ Multiple slice values can share a backing array, so that the backing array is ht
 
 If you don't know your length, you shouldn't be slicing.
 
+Slice with length in mind... get the value you want to start with plus your length, slike slice(2:[2+2 aka 4]) rather than having to think about going from your starting to point to an index not including
+
 Slice values are like a unique view of the core data structure (array)
 
 If two slices point to the same backing value, you can have side effects from modifying values in those slices
 
-Three index slice help reduce side effects
+Three index slices help reduce side effects
+slice2 := slice1[2:4:4]
 
 Built in function copy can also be used
 
@@ -527,6 +532,8 @@ Strings in Go are UTF-8 based... the entire language is UTF-8
 UTF-8 is a three-layer character set... bytes at the bottom, code-points in the middle (a 32-bit or 4-byte value) and on top characters (1 to 4 code-points)
 
 A string has a pointer to the underlying array of bytes and the length of the underlying array
+
+In Go, rune is really just an alias for type int32
 
 Every array in Go is just a slice waiting to happen
 
@@ -556,7 +563,9 @@ Start from the concrete data and move up to bhevaior/decoupling
 
 TOo many developers work the other way, starting with behavior/decoupling... if you start there you are guessing
 
-A method is a function that has a receiver
+*A method is a function that has a receiver*
+
+*A receiver is a parameter. Think of it that way*
 
 We need to learn when a piece of data should have behavior... it should be the exception, not the rule... which is a different paradigm from OOP
 
@@ -588,7 +597,7 @@ For user-defined types (structs) you have to choose which semantic is in play.
 If you're not sure what to use then use pointer semantics.
 If you can use value semantics, then use them.
 
-Do not make copies of values that pointers point to
+Do not make copies of values that pointers point to, that is a violation of semantic law
 
 ## 4.1 Methods--Part 3 (Function/Method Variables)
 
@@ -609,3 +618,4 @@ We want to be sure that cost is worth it, we don't want to blindly decouple
 Remember, allocaiton is number 2 on our list of performance concerns. But if decoupling is adding value (minimizing cascading changes) you take that cost all day long
 
 ## 4.2 Interfaces -- Part 1
+First note part 1
