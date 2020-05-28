@@ -617,5 +617,71 @@ We want to be sure that cost is worth it, we don't want to blindly decouple
 
 Remember, allocaiton is number 2 on our list of performance concerns. But if decoupling is adding value (minimizing cascading changes) you take that cost all day long
 
-## 4.2 Interfaces -- Part 1
-First note part 1
+## 4.2 Interfaces -- Part 1 (Polymorphism)
+
+Polymorphism means you write a certain program that behaves differently depending upon the data it operates on.
+
+Polymorphism means a piece of code changes its behavior depending on the concrete data it depends on.
+
+When should a piece of data have behavior? One good reason is when you need polymorphism/decoupling... wnat to process all different types of data with a single piece of code.
+
+An interface type is not real, there's nothing concrete about an interface type (unlike struct, which has real data you can manipulate)
+
+Interfaces only define a method-set of behavior. They define a contract of behavior.
+
+Interfaces should always be about behavior, not things.
+
+Let the concrete data drive everything we do, even through the decoupling.
+
+Interface types are valueless
+
+Pass me any piece of concrete data that satisfies the reader interface, implements this contract, has the full suite of behavior/ method sets
+
+We store concrete data inside of interface values ... though interfaces are valuleless, through the mechnaism of storing we have someting more concrete.
+
+the copy of the data is stored inside the interface as a pointer
+
+An interface is a two-word data structure. The second word holds the pointer to the piece of data. The first word holds a pointer to the iTable ... where it describes teh type of file being stored in the interface and a function pointer to the concrete implementation of the interface.
+
+Indirection and allocation, that is what decoupling costs us.
+
+## 4.2 Interfaces -- Part 2 (Method Sets and Address of Value)
+
+Interface types are valueless... if a function signature asks for an interface type it actually wants any concrete type that implements the interface
+
+There are rules around method-sets, and those rules are there to protect our software.
+
+The rules of method-sets:
+1. If you're working with a value of type T, only those methods using value receivers belong to the method-set for that value
+2. If you're working with a pointer of type T, then pointer receiver and value receiver methods are available
+
+## 4.3 Interfaces -- Part 3 (Storage by Value)
+
+Decoupling is inherently an allocation type of operation, that's not unique to Go ...
+
+## 4.3 Interfaces -- Part 4 (Embedding)
+
+A good way to think about this is to create an inner type/ outer type relationshiop ... this leads to inner-type promotion, allowing access to things in the inner type to the outer type.
+
+Inner-type promotion gives you a sense of type re-use but you can use it for much more than that...
+
+Embedding does not create a sub-typing relationship ... this isn't based derived classes like in OOP ... the outer value satisfies contracts that the inner value does with inner-type promotion
+
+if an outer type ALSO implements an interface that the inner type does, then there is no promotion ... the outer type will override the inner types implementation
+
+Only at compile time are things being accessed promoted up
+
+Embedding is for composition, not type reuse
+
+## 4.4 Exporting
+
+Exporting is kind of the encapsulation piece of Go ...
+
+The basic unit of compilation in Go is a package, which in Go is a folder ... encapsulation ends at the folder level. Every folder represents a static library, our smallest unit of compilation
+
+I always want to see one file named after the package name
+
+The folder name should match the package name if you're being a good Go citizen.
+
+Any capitalized identifier is exported.
+
