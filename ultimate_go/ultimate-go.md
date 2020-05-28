@@ -738,5 +738,17 @@ I don't want you to be worried about throwing code away... refactoring is the be
 
 ## 5.2 Decoupling -- Part 2
 
+I believe in prototype driven design... we have to get code with integrity into production faster ... to me technical debt is when you're working on code that never gets into production...
+
+Don't optimize for performance, optimize for correctness ... you don't reallyknow what's going to be more performant until you benchmark and profile
+
+Remember, we want to use functions first before we go make a method
+
+Why is a function always more precise than a method can be? Because a function requieres you to pass in all of the input in order for it to do it's thing ... methods can hide information
+
+When you hide things you set yourself up for fraud and misuse
+
+When working with a private codebase, it's ok to break APIs, I want that to happen all the time ... I have code in production level software that has functions that take 8, 10 inputs etc... more precise is better
+
 
 
