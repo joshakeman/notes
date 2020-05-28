@@ -685,3 +685,28 @@ The folder name should match the package name if you're being a good Go citizen.
 
 Any capitalized identifier is exported.
 
+## 5.1 Composition (Grouping Types)
+
+Composition is something you'll be focused on a lot as a Go developer ...
+
+First topic is grouping ...
+
+There's no sub-typing/sub-classing in Go
+
+**Go is about convention over configuration** .. Go says configuration is limiting
+
+Go is about not who we are (say Animals as a type) but about what we do (hinting at interfaces, I think)... 
+
+We want to be able to find smells in code ...
+
+There is some cost to DRY (do not repeat yourself) ... sometimes a little duplication of code saves you coupling costs
+
+Interfaces should define behavior, not persons/places/things
+
+Concrete types should be used for persons/places/thing
+
+You should try only to declare types for something new or unique ... we want to avoid using aliases ... if there's no method-set associated with a type you may not need it.
+
+Remember constansts of a kind can be implicitly converted
+
+If you define a type you should be creating values of that type ... if you're not using values of the type then you created a pure abstraction ... that's smelly 
