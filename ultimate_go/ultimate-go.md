@@ -710,3 +710,33 @@ You should try only to declare types for something new or unique ... we want to 
 Remember constansts of a kind can be implicitly converted
 
 If you define a type you should be creating values of that type ... if you're not using values of the type then you created a pure abstraction ... that's smelly 
+
+## 5.2 Decoupling -- Part 1
+
+A lot of you have been taught to start with the interface behavior ... I want you to do the opposite.
+
+Remember, the  problem is solved in the concrete, not in the abstract
+
+Remember, the problem is the data.
+
+I want to see anywhere from 70 to 80% code coverage before you can say you're done.
+
+Is the code decoupled from the change we expect to happen?
+
+Decoupling is a refactoring for me, we solve in the concrete first then refactor to decouple
+
+Developers have issues breaking problems down (what do I need to solve step by step)
+
+Many software developers don't understand how to create a layered API ... instead of solving everything in a few functions, instead we want a layered approach.
+
+A three-layer model:
+- Primitive layer ... write this layer so it is testable. Remember, I'm working in the concrete. Code that is testable usually means the data we're passing in is reproducible and the data coming out is testable.
+- Lower Level ... sits on top of the primitive API that does higher level stuff ... should be testable in its own right. These layers are often unexproted ...
+- High level ... where you're trying to do as much as you can for the user to make their life better.
+
+I don't want you to be worried about throwing code away... refactoring is the best
+
+## 5.2 Decoupling -- Part 2
+
+
+
