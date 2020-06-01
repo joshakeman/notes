@@ -750,5 +750,10 @@ When you hide things you set yourself up for fraud and misuse
 
 When working with a private codebase, it's ok to break APIs, I want that to happen all the time ... I have code in production level software that has functions that take 8, 10 inputs etc... more precise is better
 
+## 5.2 Decoupling -- Part 3
+
+You can do composition of interface types (like a Reader and Writer combined as ReadWriter)
+
+If you're not refactoring you're not improving.
 
 
