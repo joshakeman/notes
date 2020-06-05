@@ -756,4 +756,25 @@ You can do composition of interface types (like a Reader and Writer combined as 
 
 If you're not refactoring you're not improving.
 
-## 5.3 Conversion and Asserstions
+## 5.3 Conversion and Assertions
+
+Functions are more precise than methods ... 
+
+## 5.4 Interface Pollution
+
+Normally interface pollution is a result of starting with interfaces rather than starting with a concrete implementation
+
+Interfaces should describe behavior, not things ...
+
+You do not have to use interfaces, you have to make engineering choices. Interfaces add the cost of indirection and allocation
+
+Factory functions should not return interfaces, they should initialize and return concrete types
+
+Question an interface when it's purpose is for making the API testable (mocking)
+
+## 5.5 Mocking
+
+We don't want to use interfaces for mocking
+
+
+
