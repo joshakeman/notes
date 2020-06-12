@@ -814,3 +814,11 @@ Put error values at the top of the source code file where they're used or at the
 
 ## 6.3 Type as Context
 
+Type as context is important when we start dealing with custom error types ...
+
+Pointer semantics are the default inthe Error library (why doe?)
+
+The empty interface tells us nothing becasue anything can satisfy it.
+
+Don't use it for generic APIs... use it to pass data around where needed or when using reflect package (a good use for that is model validation)
+
