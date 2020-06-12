@@ -760,8 +760,7 @@ If you're not refactoring you're not improving.
 
 Functions are more precise than methods ... 
 
-## 5.4 Interface Pollution
-
+##
 Normally interface pollution is a result of starting with interfaces rather than starting with a concrete implementation
 
 Interfaces should describe behavior, not things ...
@@ -771,7 +770,7 @@ You do not have to use interfaces, you have to make engineering choices. Interfa
 Factory functions should not return interfaces, they should initialize and return concrete types
 
 Question an interface when it's purpose is for making the API testable (mocking)
-
+ 
 ## 5.5 Mocking
 
 We don't want to use interfaces for mocking
@@ -821,4 +820,18 @@ Pointer semantics are the default inthe Error library (why doe?)
 The empty interface tells us nothing becasue anything can satisfy it.
 
 Don't use it for generic APIs... use it to pass data around where needed or when using reflect package (a good use for that is model validation)
+
+## 6.4 Behavior as Context
+
+There's a naming convetion for a custom error type, that is ends in the word Error (like OpError)
+
+Four methods for craeting custom interface based error types...
+1. Temporary
+2. Timeout
+3. Not Found
+4. Not Authorized
+
+That's it ... if you can add any one of these four, we can maintain decoupling... Temporary is kind of a blanket statement whether your have an integrity issue or don't
+
+## 6.5 Find the Bug
 
