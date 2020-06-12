@@ -776,5 +776,36 @@ Question an interface when it's purpose is for making the API testable (mocking)
 
 We don't want to use interfaces for mocking
 
+## 5.6 Design Guidelines
 
+Interfaces encourage design by composition
+Use interfaces to decouple where things could change
+Keep interfaces small, compose them as you need them.
 
+## 6.1 Error Values
+
+Lines of code are important and if we're trying to avoid legacy software we have to think about failures
+
+From an API design persepctive, error handling is about showing respect to the user of your API ... 
+
+If your application loses integrity, you have a responsibility to shut it down.
+
+There's two ways to shut down in go ... os.Exit() or the built-in function Panic() ... if you need a stack trace call Panic, otherwise call os.Exit()
+
+The error interface is built in to the language... if you think about it, error handling in Go is done froma decoupled state
+
+Errors are just values in go. The most widely used value is error.Error()
+
+Whatever comes out of the error string should be for logging only. If your user is parsing it to get context, you have failed
+
+Use the if statement on an error check to handle negative path logic
+
+Else clauses make code an order of magnitude an order of magnitude harder to read... instead of doing else just take the assumption that if the error check is passed you move to the next bit of your code.
+
+If you do have an if-else situation to handle try the switch statement instead
+
+Remember, error is an interface value...
+
+Nil is the zero value for the two types that can be nil... pointers and reference types
+
+## 6.2 Error Variables
