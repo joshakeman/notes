@@ -809,3 +809,8 @@ Remember, error is an interface value...
 Nil is the zero value for the two types that can be nil... pointers and reference types
 
 ## 6.2 Error Variables
+
+Put error values at the top of the source code file where they're used or at the top of the package 
+
+## 6.3 Type as Context
+
