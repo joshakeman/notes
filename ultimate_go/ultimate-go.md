@@ -899,3 +899,71 @@ The more decoupled/reusable a package is, the better it wil be in the ecosystem.
 
 If a package is making decisions about how we log, how we do configuration, how we do things, then only applciations that want to do those things the same can use it ... the more policy a package has the less reusable it is.
 
+## 7.3 Package-Oriented Design
+
+Anytime I see a project structure that's working, it's applying these design philosophies ...
+
+I really do believe every team should have a kit project ...
+
+I also believe a project is bound to a single repo ...
+
+A kit project is the set of foundational packages or APIs that every application you're building should use ... like log packages, web frameworks, etc ...
+
+I wan tto see that laid out in the root of the source tree
+
+The packages should be as decoupled as possible
+
+I don't like the log interface (what's this mean?)
+
+Every project you work on is an application project ...
+
+structure is:
+
+|__cmd/
+|__internal/
+|   |__ platform/
+|__ vendor/
+
+Vendoring means you can own all the source code you're working with ... I storngly encourage you to do this, own all the source code.
+
+The *cmd* directory is where the binaries, the applications themselves are ...
+
+Packages there are application specific, not a lot of business logic, more presentational logic (taking in requests, giving responses)
+
+You can get away with packages that contain at this level because they have no level of reusability because they're just for this application. You can also have tests folders.
+
+The *internal* folder is where we put our business logic ... We'll use files to organize sourcecode, not folders
+
+the platform folder under internal is foundational stuffs
+
+If a package provides business layer it'll go under itnernal ... if foundatioal it'll be platform ... if specific to app, maybe presentational request/response then cmd ... 
+
+We use the internal name to get an extra layer of compiler protection ... the compiler makes sure if any project tries to import another project's internal packages, the compiler will say no.
+
+I can now validate where a package belongs based on its purpose ... its purpose dictates platform, internal or cmd
+
+This design also allows us to validate dependency choices ... regardless of where the package is we want to know the costs and of the decoupling ... don't import a package for its types ... 
+
+Work hard that at the internal level that you keep packages at the same level from importing eachother ... 
+
+You can always import down, not up ...
+
+internal/platform don't set policy ...
+
+cmd/internal can set policy ...
+
+Kit cannot panic (that's a policy) or wrap errors with context
+
+Cmd can panic and wrap errors
+
+internal not allowed to panic, but can wrap errors
+
+Platform packages are liek kit, no panicking, no wrapping
+
+Test files should always be in the same folder as code for kit/ internal/ and internal/platform/
+
+in cmd you can have a folder called tests
+
+cmd/ can recover from panic if system is back to 100% integrity
+
+kit/ internal/ and internal/platform shouldn't recover from panics (with exception of goroutines being used within them)
