@@ -967,3 +967,85 @@ in cmd you can have a folder called tests
 cmd/ can recover from panic if system is back to 100% integrity
 
 kit/ internal/ and internal/platform shouldn't recover from panics (with exception of goroutines being used within them)
+
+## Lesson 8 Concurrency
+
+## 8.1 OS Scheduler Mechanics
+
+Go can't take all the cognitive load away from concurrent programming ...
+
+We're always responsible for synchronization and orchestration ...
+
+An Operating system scheduler is a pre-emptive scheduler ... when it's making a decision about how to schedule threads, we can't predict what it will do (i'ts not deterministic)
+
+When a program starts on your OS, the OS will start a process (kinda like a container for the resources the program needs... not a container like Docker ... it's a way of maintaining managing resources for that program)
+
+The two key resources we talk about all the time is memory (the process gets a full memory map), the other thing the process is given is a thread (we call it the main thread) .. when the main thread dies the rpcoess shtus down...
+
+If the process is the container, the thread is the path of execution ...
+
+Machine code is executed linearly on a path of execution... the thread has the job of managing that linear path ... you have an instruction pionter or PC (program counter) telling you at the hardware level what instruction is being executed next
+
+Schedulers at the OS level don't care about processes, they care about paths of execution
+
+From our perspective a path of execution or a thread can be executing, running. 
+
+A thread can be in one of three states ... executing/running (it's placed on a core and whatever it's pointing to is the next instruction to be executed) ... when teh OS decides the thread can no longer execute on the core, you have a context switch. Threads can only be placed on the core if it's in a runnable state.
+
+So you have *running*, *runnable*, and *waiting*
+
+Context switches at the OS level are very expensive
+
+A tremendous amount of info has to be saved out of the core the thread is running on so when it's palce dback on the core the thread has no idea it never stopped.
+
+Threads have a 1 Meg stackspace which makes them very expensive.
+
+When a thread is in a waiting state it disappears from view until it moves back into a runnable state... it may be waiting for something from the OS (disk io, network io, something ...)
+
+The OS scheduler gives the perception that all the threads are running at the same time ... to do that it gives all threads a slice of time on the core ... If any thread goes from a running state to a waiting state it will use less of its time slice letting another thread on quicker ...
+
+OS's have the idea of prioritizing threads ...
+
+What if there was only a thousand threads ... then we get the idea each thread's going to get more time...
+
+So, less is more ...
+
+When context switch is happening, your thread is not running, OS programs are running. That's clock cycles where your code is not executing ... that's latency.
+
+Something interesting happened in 2004... we started to see multi-core processor become mainstream in the marketplace ...
+
+This allowed for running threads in parallel (across separate cores)
+... concurrency really means managing many things at once ...
+Parallelism is when you're actually DOING multiple things at once
+
+When we started getting hardware with multiple cores, the academics started doing researchers identifying the OS schedulers didn' tknow how to handle multi-cores...
+
+They found runnable threads not being scheduled on cores that were available ...
+
+What that meant was in 2004 the schduling problem opened back up, we had to re-write the schedulers to take advantage of multiple cores...
+
+The scheduler is a complex algorithm ...
+
+Each core has an L1 and L2 memory chache, then there's an L3 in main memory ...
+
+The cores talk to eachother ... it actually matters that some cores are physically closer to the others. 
+
+Throwing more cores at a problem doesn't mean it's going to get faster if you're not mechanically synpathetic with the way processors work.
+
+If a core is idle it's going ot be used, evne if you have to bring in data ...
+
+Any time a thread is in a runabble state you'll put it in a run queue ... the OS is taking the threads and putting them in those queues ... the linux OS is brilliant a that stuff
+
+All this is going underneath, we don't have to worry about it, but we do need to be mechanically sympathetic to it ...
+
+We've got to udnerstand our workloads... we've got to understand when to use synchronization or orchestration ... 
+
+When I talk about understanding the workload, I'm talking about two tyeps of workloads ... CPU bound workloads and IO Bound ... CPU Bound will never move from running to waiting state ... IO-bound work could be making a DB call, disk IO ... anything that could cause the path of execution to pause ... for those kinds of use cases having multiple threads on a core is really helpful because while one pauses another can go ...
+
+Historically we handled this by using thread pools  ... what gives us the best throughput?
+
+IOCP was the Windows solution to thread pooling ...
+
+More threads don't always mean faster work. 
+
+
