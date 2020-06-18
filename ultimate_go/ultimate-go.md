@@ -1048,4 +1048,55 @@ IOCP was the Windows solution to thread pooling ...
 
 More threads don't always mean faster work. 
 
+## 8.2 Go Scheduler Mechanics
+
+We just went through the OS scheduler mechanics and the aspects of that we're going to be sypmathizing with in Go ... when your Go program starts up, it is given a logical processor that we call P ... this is modeled similarly to the linux OS scheduler ... the P is given an M which stands for machine, which stands for a real OS thread (path of execution) which is itself still responsible for scheduling on one of the computer's cores
+
+There's also a Global run Queue and a Local run queue ... a goroutine like a thread is a path of executino that can be in three states ... runnings, runnable, and waiting...
+
+We don't need more Ps (threads) than we have cores ...
+The processor can be switched into ttwo classic modes ... kernel mode and user mode ... kernel mode says whatever program's running can do whatever it wants ... when we're executing our Go code it executes in a protected mode called user mode.
+
+OS code is kernel mode stuff ... this is why drivers can bring your OS down because they run in kernel mode so it can do whatever it wants ...
+
+Go code executes in user mode ... since the go scheduler is built into the Go runtime, which is built into the application, it runs in user mode ... so it's not a pre-emptive scheduler but a cooperating scheduler ...
+
+Cooperating scheduler means the app develoepr has to do the cooperation ... if a piece of code gets on a thread the app developer says when they want to give up ... ??
+
+Go changed the game with the cooperating schduler ... the develoepr doesn't do the cooperating, the Go Scheduler does it ... The user space cooperating scheduler looks and feels pre-emptive.
+
+So the go scheduler is like a pre-emptive schduler ... it's as non-deterministic as the OS scheduler is ... all thigns being equal.
+
+Scheduling decisions were made at the point of function calls (at least before current Go)
+
+There's three classes of events that allow the scheduler to make a scheduling decisions ...
+
+1. The use of the keyword Go ...
+2. Garbage collection
+3. Syscalls ... any time you call log or fmt.Print that's a system call
+4. Blocking calls (use of a mutex, atomic instruction, etc)
+
+Our OS systems can do asynchronous calls ... we try to leverage that as much as we can ...
+
+Go has a special data structure called a Network Poller that leverages the OS thread pooling system ... when a Gorutine wants to make a syscall it is context switched off the M to the network poller to handle it asynchornously... that opens an M for another Goroutine in runnable state to run
+
+Anything we can do asynchronously to keep the thread working we want to do ...
+
+Some OS's may not support asynchornous calls... or something you can't do asynchronously... etc... when that happens and a Goroutine makes a blocking call, the scheduler will detach the M 1and G (goroutine), let it block, and then come in and bring a new thread M2 ... we're still single threaded (eh?)
+
+By default you can have 10,000 blocking threads off to the side while the main thread runs
+
+If we're in a multi-P environment and a P has no work it will look to the Global Run Queue for work ... it may even look over at someone else's overloaded Local queue and take that ...
+
+There's a special stat in a scheduler trace to show when an M on a P is spinning ... an M is not occupied by a goroutine ...
+
+We want to keep the M busy all the time so the OS scheduler doesn't pull your M off to go do something else. 
+
+A context switch in Go is faster becasue it can save less state than the OS does because the scheduler knows what the goroutine is doing.
+
+During ever context switch in Go, from the OS perspective, that thread never went in a waiting state, it's running or runnable
+
+The brilliance of this scheduler is Go has turned IO-bound work into CPU-bound work 
+
+MIND BLOWING !!!
 
