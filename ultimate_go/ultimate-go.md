@@ -1100,3 +1100,14 @@ The brilliance of this scheduler is Go has turned IO-bound work into CPU-bound w
 
 MIND BLOWING !!!
 
+## 8.3 Creating goroutines
+
+Goroutines are chaos. 
+
+I always like to think of goroutines as children ... this is almost like a parenting class, your children are running all over the place... every time you run a goroutine you're bringing a child into the world...
+
+There's two aspects to this, synchronization and orchestration ...
+
+You can't create a goroutine (bring a child into the world) unless you can tell me how and when that gorotuine's going to be terminated before the go program shuts down. 
+
+The go runtime has a very simple deadlock detector ... 
