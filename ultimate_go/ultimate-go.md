@@ -835,3 +835,50 @@ That's it ... if you can add any one of these four, we can maintain decoupling..
 
 ## 6.5 Find the Bug
 
+Remember, interface values are valueless
+
+## 6.6 Wrapping Errors
+
+We write applications taht log a lot of things, andmostly we log as an insurance policy to be able to find bugs when errors occur...
+
+the reality is there's too much activity on systems these days, so logging that much has a signfincat cost ... logging can create a large amount of allocations that put pressure on your heap ...
+
+Logging is important but we've got to constatnyl balance signal to noise in the logs... if you're writing data to logs you don't use, you're wasting CPU cycles
+
+You're also eating network bandwith, disk IO, etc ...
+
+We want strong signal in the logs.
+
+How do you make sure there's enough context in the log for both tracing (minimal) and error perspective? And have a consistent pattern everyone can follow to log things ...
+
+Bill doesn't believe in logging levels ... he tends to use the standard library log package ... will create his own logger to pass around the application ... but either I need this info or I don't, and with testing make sure my logs have signal ...
+
+Dave Cheney's error package gives us a consistent way to apply error handling and logging to minimize pain ...
+
+When we talk about error handling, what we mean is error code should log the error and also make a decision whetehr to exit or recover ...
+
+At the end of the day that code should either recover or shut down once it's logged the error.
+
+we're not going to separate logging from error handling, it's just one thing. 
+
+## Lesson 7: Packaging
+
+## 7.1 Language Mechanics
+
+Package oriented design is really important.
+
+The whole idea around mental models is knowing where everything is.
+
+The package is the basic unit of compilation in Go
+
+This package oriented design is very different from Object Oriented design
+
+There isn't just one way to do this ... this is how Bill Kennedy does it.
+
+In Go we don't really have a monolithic application ... in Go every folder in your source tree represents a static library.
+
+From the compiler's point of view all packages are at the same level.
+
+Two packages cannot cross import eachother
+
+
