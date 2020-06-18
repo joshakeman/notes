@@ -881,4 +881,21 @@ From the compiler's point of view all packages are at the same level.
 
 Two packages cannot cross import eachother
 
+## 7.2 Design Guidelines
+
+Packages must provide, not contain ... must be named with the intent to describe what it provides... packages like util, helper, common just contain code and cause problems ... if you have a package today called models, your project has already failed
+
+Types are an artifact to move data across program boundaries, they're not APIs in and of themselves
+
+Every package that has a purpose has its own type system ... even if you have to duplicate types across packages, that's better
+
+You can leverage interfaces later on to decouple APIs and allow everyone to accept eachothers concrete data
+
+Packages must provide, not contain.
+
+We don't want packages/APIs that are vague
+
+The more decoupled/reusable a package is, the better it wil be in the ecosystem... minimize coupling because coupling creates constraints
+
+If a package is making decisions about how we log, how we do configuration, how we do things, then only applciations that want to do those things the same can use it ... the more policy a package has the less reusable it is.
 
