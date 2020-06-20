@@ -1258,3 +1258,15 @@ Think about closing a channel as turning off the lights ... the problem is once 
 If you send on a closed channel you'll panic, but you can receive on a closed channel ...
 
 Everything about multi-threaded software dev has to be around behavior and understanding semantics
+
+## 10.2 Basic Patterns--Part 1 (Wait for Task)
+
+You can use make for slices, maps and channels. There is no other way to initialize a channel and put it in its open state. You can't pre-initialize a channel with data ...
+
+Channels are typed (like a channel of strings, or ints, etc)
+
+**If you see an unbuffered channel, you should think you want a channel with guarantees that a signal has been received**
+
+channel receive is a unary operation and is a blocking call in a buffered channel.
+
+You can't use print statements to proxy ordering of concurrent stuff in channels ...
