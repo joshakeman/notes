@@ -1270,3 +1270,22 @@ Channels are typed (like a channel of strings, or ints, etc)
 channel receive is a unary operation and is a blocking call in a buffered channel.
 
 You can't use print statements to proxy ordering of concurrent stuff in channels ...
+
+## 10.2 Basic Patterns--Part 2 (Wait for Result)
+
+## 10.2 Basic Patterns--Part 3 (Wait for Finished)
+
+A waitgroup would make this code cleaner but you need the mechanics to understand cancellation and deadlines with the context package.
+
+We're going to use the empty struct to denote signaling without data ... so all we're really doing is closing the channel ... anytime you see a make(chan struct{}) think about signaling without data ...
+
+Wait for FInished can be used for cancellation ...
+
+## 10.3 Pooling pattern
+
+Hesitate before creating pools of goroutines, the go scheduler is intelligent and is alrady kind of like pools of goroutines anyway ...
+
+You absolutely want guarantees with pooling so you can apply timeouts and cancels ... can't do that with buffered channels ...
+
+When you're working with multi-threaded software you've got to deal with backpressures and latencies ... one way to deal with it si timeouts... if you don't complete your work within a timeout you're gone and someone else gets to come in.
+
