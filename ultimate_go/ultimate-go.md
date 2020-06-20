@@ -1196,3 +1196,18 @@ I've written code before that got so out of hand on complexity /concurrency that
 Most the time I run the race detector on go test.
 
 If the race detector finds a race, you have a race. Fix it ... if it doesn't find one it doesn't guarantee you don't have one. You could have them on different platforms because their scheduler works differently.
+
+## 9.5 Map Data Race 
+
+Accessing a map in Go is not inherently synchronous, you don't get that for free ... you odn't get anything for free when it comes to synchronization and orchestration, you're responsible for that ...
+
+There's been enough problems that the runtime includes data race detection for map access ...
+
+Go cares about integrity over everything and there's a cost to integrity which is performance...
+
+Two goroutines writing to the same map is a data race even if they're not writing ot the same unique key ... it's still the same piece of data
+
+## 9.6 Interface-Based Race Condition
+
+The worst thing that could happen to you in a datarace is that your code keeps running ... 
+
