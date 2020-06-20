@@ -1289,3 +1289,18 @@ You absolutely want guarantees with pooling so you can apply timeouts and cancel
 
 When you're working with multi-threaded software you've got to deal with backpressures and latencies ... one way to deal with it si timeouts... if you don't complete your work within a timeout you're gone and someone else gets to come in.
 
+## 10.4 Fan Out Pattern--Part 1
+
+Fan out patterns are dangerous, particularly in say web services when you already have lots of goroutines running in a service ... but for background applications on chronjobs or cli tooling teh fan out pattern can be great ! 
+
+You've got to think about scale when you're using fan-out patterns, that's why they're scary
+
+Buffers don't provide performance ... any time a buffered channel can get full we have to ask ourselves what happens when the send blocks ... I've seen too much software saying i'll use a buffer of 10,000 so it never blocks ... but then eventually the network grows enough it isn't big enough any more .... you can't guess ...
+
+Again avoid this on web services but in cron jobs, cli, or lambda functions written in Go this can be a very powerful pattern
+
+## 10.4 Fan Out Pattern--Part 2
+
+There's another fanout pattern called the fanout semaphore ... we don't necessarily want all goroutines to run at the same time ... limit how many can run at the same time ... this can reduce latency in terms of goroutine creation and limit the impact goroutines are having on another resource ...
+
+## 10.5 Drop Pattern
