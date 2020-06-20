@@ -1304,3 +1304,15 @@ Again avoid this on web services but in cron jobs, cli, or lambda functions writ
 There's another fanout pattern called the fanout semaphore ... we don't necessarily want all goroutines to run at the same time ... limit how many can run at the same time ... this can reduce latency in terms of goroutine creation and limit the impact goroutines are having on another resource ...
 
 ## 10.5 Drop Pattern
+
+Another patternt that can leverage the buffered channel, identify when things are going bad and reduce back pressure ...
+
+Good example of Drop pattern would be for a DNS server ... these are frequently attacked ... the whole idea of a DNS attack is to drown it with requests ... so the key is to set the maximum capacity for requests and then just say no. 
+
+Drop patterns are helpful, they help us identify problems quickly and stop the bleeding. 
+
+## 10.6 Cancellation Pattern
+
+Cancellation patterns are critical in software because things can last forever ... in Go we should mostly be using the context package for doing this. 
+
+Goroutine leaks sometimes don't show themselves for a long time because Go is good at minimizing memory waste.
