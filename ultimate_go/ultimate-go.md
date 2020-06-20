@@ -1211,3 +1211,50 @@ Two goroutines writing to the same map is a data race even if they're not writin
 
 The worst thing that could happen to you in a datarace is that your code keeps running ... 
 
+## Lesson 10: Channels
+
+## 10.1 Signaling Semantics
+
+Channels are a way of doing orchestration in multi-threaded software ... you have to worry about two things:
+- Synchronization
+- Orchestration
+
+Atomic isntructions and mutexes are about synchronization (getting in line and taking turns) ...
+
+Channels allow us to move data across goroutine boundaries which is organization (not waiting in line but doing actual interactions)
+
+Too many people look at channels as a data structure, a synchronous queue... don't think about channels as a data strcuture ... look at behavior, and the behavior we want to talk about is signaling ... we always focus on the signaling behavior first and how the channel lets us implement that behavior
+
+Mechanics help us debug things underneath but semantics teaches us how things will behave and the impact ...
+
+When it comes to channels you think about signaling ... pointers are for sharing, channels are for signaling... a goroutine will send a signal to another goroutine ...
+
+The first thing we have to talk about are signaling guarantees ... do you need a guarantee a signal sent by one goroutine has been received by another? Does the sending goroutine need a signal that the sent signal has been received?
+
+We're saying send and receive, not read and write... 
+
+If you need a guarantee we'll use the unbuffered channel. If not we'll use a buffered channel.
+
+Guarantees are important because they make things consistent and reliable in the software ... and in lots of contexts ...
+
+The cost of signaling with a guarantee is unkown latency ...
+
+If you want the benefit of guarantees you have to live with unknown latency ... 
+
+There's still potential blocking on a buffered channel that lacks guarantee, but you are still able to partly reduce latency/back pressure ...
+
+Signalling without data is typically for cancellation and deadlines ... 
+
+A channel set to its zero value is a nil channel ... if you do any send or receive on that channel you'll block ...
+
+You've got to make a channel to open it ... you can't do literal construction on a channel, you have to use make()
+
+A useable channel is in its open state ... 
+
+A channel can be closed using the builtin function Close ... you don't have to close channels. Closing a channel is a state change, it's not a memory clean up situation ...
+
+Think about closing a channel as turning off the lights ... the problem is once a channel closes it can't be opened again from that switch ...
+
+If you send on a closed channel you'll panic, but you can receive on a closed channel ...
+
+Everything about multi-threaded software dev has to be around behavior and understanding semantics
