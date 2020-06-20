@@ -1182,3 +1182,17 @@ The readwrite mutex says it's ok to read memory simultaneously ... if there's no
 rwMutex.RLock() lets goroutines read the data concurrently UNLESS there's a write happening, then there's a lock exchange. But this is a bit slower mutex to use...
 
 Multiple instruction sets across a program can use the same mutex ... but mutexes cause latency and latency si death, so we want to do the minimum amount inside a mutex.
+
+## 9.4 Race Detection
+
+Go's race detector has been around since 1.3 ... when they introduced it they ran it against the standard library and found races ...
+
+race detection is built into go build and go test ...
+
+Finding data races can be impossible ... i've been in shops where it's taken like three years ...
+
+I've written code before that got so out of hand on complexity /concurrency that the race detector helped me see someting I didn't see ... that's probably a cue to refactor
+
+Most the time I run the race detector on go test.
+
+If the race detector finds a race, you have a race. Fix it ... if it doesn't find one it doesn't guarantee you don't have one. You could have them on different platforms because their scheduler works differently.
