@@ -1111,3 +1111,24 @@ There's two aspects to this, synchronization and orchestration ...
 You can't create a goroutine (bring a child into the world) unless you can tell me how and when that gorotuine's going to be terminated before the go program shuts down. 
 
 The go runtime has a very simple deadlock detector ... 
+
+
+## 9.1 Cache Coherency and False Sharing
+
+A datarace is when you have two paths of execution accessing the same memory location at the same time, where one is doing a read and the other is doing a write ... they both could be writing too...
+
+You cannot be mutating memory against two paths of execution at the same time, you're going to have data corruption ...
+
+This is where synchronization and organization come in ...
+
+Anytime goroutines have to get in line that's a synchornization issue ... when ou get to the front of line (exchanging money, getting stuff) is orchestration (a workflow is happening)
+
+You need atomic instructions (hardware level) and mutexes to handle synchronization issues.
+
+False sharing occurs when you don't have a synchronizaiton problem but you still have cache coherency issue ...
+
+You're using value semantics at the hardware level (lots of copies of the same data everywhere)
+
+Memory thrashing canhappen because shared data is on the same cache line, even if there's no actual data race occurring ... the problem is the data is next to eachother on a shared cache line ... this is called false sharing
+
+in multi threaded software you should see *linear* growth in performance as cores go up... memory thrashing can mess that up and cause and up-and-down trend
