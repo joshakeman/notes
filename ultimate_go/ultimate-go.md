@@ -1151,3 +1151,34 @@ the sync/atomic package lets you use atomic insttuctions... you must have a spec
 
 All synchronization is at the address level ...
 If multiple goroutines are calling the same memory location, they get in line ... but if they call different memory locations they can run in parallel ... but if you really wanted to maintain your logic before .... 
+
+## 9.3 Synchronization with Mutexes
+
+Usually a mutex will be a field in a struct ... if you have a mutex in a struct that value should no longer be copied, as that creates a new mutex ...
+
+Think of a mutex as creating rooms in your code. 
+
+You say these lines of code in the room ... we have to make sure they always run atomically, one after the other with no interruption ... so we put them in the room, and the scheduler acts like a bouncer for abar ... all the goroutines show up and want in, but we only allow one in at a time ...
+
+When you get to the room, if you're a goroutine, what you're going to do is ask the scheduler (i want a lock)... maybe think of it as the key to the bathroom at a gas station ...
+Don't assume a goroutine that gets to the door before another is going to go first ... just like when hyou go to the club somebody in a fancy car shows up they get in ahead of you ... the algorithm is tyring to keep things fair.
+
+Once you leave the room you unlock the mutex, which allows the next goroutine into the room. 
+
+There's a cost to mutexes, and that's latency ...
+
+The amount of time gtting in and out of the room is technically backpressure in the system, and we need to be able to measure that backpressure and reduce ... so you actually have to make sure you do the least amount of work that has to be atomic possible ... more atomic work puts more latency/back pressure in the system
+
+I've seen code where they try to cut corners on latency and thus the code isn't really running atomically ...
+
+Bill has a rule, the same function that calls mutex.Lock() must call mutex.Unlock() ... 
+
+Some people like to use defer on Unlock
+
+Go doesn't let the same gorotuine call Lock twice ... (what's this mean?)
+
+The readwrite mutex says it's ok to read memory simultaneously ... if there's no write occurring it's totally ok to use that data simultaneously ...
+
+rwMutex.RLock() lets goroutines read the data concurrently UNLESS there's a write happening, then there's a lock exchange. But this is a bit slower mutex to use...
+
+Multiple instruction sets across a program can use the same mutex ... but mutexes cause latency and latency si death, so we want to do the minimum amount inside a mutex.
