@@ -1316,3 +1316,48 @@ Drop patterns are helpful, they help us identify problems quickly and stop the b
 Cancellation patterns are critical in software because things can last forever ... in Go we should mostly be using the context package for doing this. 
 
 Goroutine leaks sometimes don't show themselves for a long time because Go is good at minimizing memory waste.
+
+## 11.1 Context--Part 1 Concurrency Patterns
+
+Context is what we use for cancellation and deadlines ....
+
+Go made it simple to create goroutiens but not as simple to cancel them... context package helps that
+
+time outs, time outs, time outs etc ...
+
+Any API you have that does any IO should be taking context as its first parameter ...
+
+One of the things Context has is a generic value bag ... I'm afraid of that because you don't want to be using it for local thread storage ... you odn't want to hide data in a context ... 
+
+To work with context you need a context, and if you don't have on you need a parent context ... you can use context.TODO() or context.Background()
+
+You can think of Backgrtound as setting up an empty context ... 
+
+Context uses value semantics ... 
+
+Value semantics are critical for the context inheritance path to work... if things split and values change
+
+WE've got to be careful when we store data into the context ... you can't be hiding data in your software ever ... be careful what you put in there ... Everything is value semantics with context ...
+
+You must call cancel when you do withTimout or withCancel etc ... typically you'll defer Cancel()
+
+## 11.1 Context -- Part 2
+
+Using cancellations in an http package ... 
+
+The http request has a context already. 
+
+## 11.2 Failure Detection
+
+Imagine an application streaming data to devices ... millions of devices, we're streaming and logging as it happens ... we're letting every goroutine write to stdout for their logs ... what if stdout suddenly causes blocking ... every goroutine will be stopped in a waiting state... no more video streaming now. Could be talking 10,000 go routines ...
+
+Remember ... you have to decide for your server is it ok to stop things when we can't log? In a TV streaming situation, you can't stop the streaming ... 
+
+Using the standard library logger and allowing goroutines to write to sdout is not an acceptable solution ,... you need more complexity where you check if the logwrite will block and if so don't let it log ....
+
+If you used a drop model for funneling logging to one goroutine how would you pick the size of the buffer? would have to do some testing ...
+
+If we use a drop pattern it's great... while there's room in the buffer the goroutines can make their send toward the logging goroutine ... if the logging routine blocks, the buffer will fill up quickly and then any furthur goroutines that come requesting to enter the buffer and are told they can't will just drop that logging request. they're not going to wait around 
+
+A factory function for a logger should use pointer semantics (return a pointer)
+
