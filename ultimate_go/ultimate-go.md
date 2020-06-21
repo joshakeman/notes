@@ -1361,3 +1361,40 @@ If we use a drop pattern it's great... while there's room in the buffer the goro
 
 A factory function for a logger should use pointer semantics (return a pointer)
 
+## 12.1 Basic Unit Testing
+
+Testing is built into the go tooling ... there are good third party packages for testing but Bill says to avoid it. 
+
+Kevin Henney said this ... a unit test is a test of behavior whose success or failure is wholly determined byt eh correctness of the test and the correctness of the unit under test
+
+We've got to make sure our tests are adding value and that we're not over or undertesting.
+
+Test files should be in an _test.go file ...
+
+the test filers won't be compiled into the binary ...
+
+Ideally the _test.go file should be in the same package as teh source code being tested ...
+
+If you want to unit test tailored to how the user will user the api ... add _test to the end of your package name at the top of the file
+
+I typically start with the unexported API quite a bit ... then eventually when I get to the exported APi that's using the unexported API I can start ripping out the unexported tests and just keep the exported tests ...
+
+I don't get hung up writing tests I throw out later ... I consider that more productive, not a waste of time ...
+
+I want unexported APIs to be very very testable and make sure the exported APIs are very very useable ...
+
+It's critical for tests to be exported or the testing package can't find it ... The test function starts with Test and what follows must be capitalized (i.e. TestDownload to test the function Download ... it can also look like Test_Download)
+
+Not only does it have to start with test, it also has to accept a testing.T pointer (t *testing.T)
+
+We're trying to test the semantics (behavior) of what the API is trying to do 
+
+Bill uses artificial code blocks for readability 
+
+You must check errors in tests 
+
+Whether a test succeeds or fails I want to see a consistent message 
+
+When tests fail the tool automatically goes to verbose mode ... you can force verbose mode with -v
+
+The -run flag uses a regular expression to be able to filter the test functions you want to run
