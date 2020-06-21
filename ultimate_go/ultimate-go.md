@@ -1398,3 +1398,24 @@ Whether a test succeeds or fails I want to see a consistent message
 When tests fail the tool automatically goes to verbose mode ... you can force verbose mode with -v
 
 The -run flag uses a regular expression to be able to filter the test functions you want to run
+
+## 12.2 Table Unit Testing 
+
+Table unit testing is a powerful way to write a unit test ...
+
+A lot of go developers love writing table tests
+
+## 12.3 Mocking Web Server Response
+
+Problem with some web serving tests is they require connection to the outside world ... we're often not that lucky to be able to do that in testing ...
+
+I'd rather use docker if we're mocking a database ... don't mock databases ...
+
+But web servers can be mocked because we know web servers work ... we now the HTTP protocols will work ...
+
+So already built into go's standard library is a way to mock http calls with net/http/httptest
+
+the httptest.Server type lets you stand up a webservice in the test  on a port it will tell us... when we hit the input it will execute the function you give it...
+
+Mocked web server tests run much faster than one where a real network call has to be made ...
+
